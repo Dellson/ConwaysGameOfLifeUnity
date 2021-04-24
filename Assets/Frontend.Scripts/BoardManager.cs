@@ -1,78 +1,42 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using Assets.Backend.Scripts.Model;
-using ConwaysGameOfLife.Backend;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using ConwaysGameOfLife.Assets.Backend.Scripts;
+using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
 
-public class BoardManager : MonoBehaviour
+namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 {
-    static int ticks = 0;
-    public GameObject TileTemplate;
-    public Sprite AliveTile;
-    public Sprite DeadTile;
-    private Dictionary<(int, int), Cell> Items;
-    private MapParser _parser;
-    private Core _core;
-
-    public void Start()
+    public class BoardManager : MonoBehaviour
     {
-        _core = new Core();
-        _parser = new MapParser("level_1");
-        Items = _parser.GetCellBoard();
+        public GameObject TileTemplate;
+        private Dictionary<(int, int), Cell> RawItems;
+        private Dictionary<(int, int), GameObjectCell> Items;
+        private Core _core;
+        private static int ticks = 0;
 
-        MapSetup("level_1");
-    }
-
-    public void Update()
-    {
-        ticks++;
-
-        if (ticks == 200)
+        public void Start()
         {
-            Items = _core.Recalculate(Items);
+            _core = new Core();
+            var parser = new MapParser("level_1");
+            RawItems = parser.GetRawCellBoard();
+            Items = new Dictionary<(int, int), GameObjectCell>();
 
-            foreach (var key in Items.Keys)
-            {
-                var cell = Items[key];
-
-                if (cell.thisObject == null)
-                {
-                    GameObject tileGameObject = CreateTile(cell);
-
-                    tileGameObject.transform
-                        .SetParent(transform, false);
-                }
-                cell.ChangeImage(cell.State);
-            }
-
-            ticks = 0;
+            foreach (var key in RawItems.Keys)
+                Items.Add(key, new GameObjectCell(RawItems[key], TileTemplate, this.transform));
         }
-    }
 
-    public void MapSetup(string levelName)
-    {
-        //_parser.MapDimensions.rows = Items.
-
-        for (int x = 0; x < _parser.MapDimensions.rows; ++x)
+        public void Update()
         {
-            for (int y = 0; y < _parser.MapDimensions.columns; ++y)
+            ticks++;
+
+            if (ticks == 200)
             {
-                var cell = Items[(x, y)];
+                Items = _core.Recalculate(Items);
 
-                GameObject tileGameObject = CreateTile(cell);
+                foreach (var key in Items.Keys)
+                    Items[key].UpdateStateImage();
 
-                tileGameObject.transform
-                    .SetParent(transform, false);
+                ticks = 0;
             }
         }
-    }
-
-    public GameObject CreateTile(Cell cell)
-    {
-        GameObject newCell = Instantiate(TileTemplate, cell.Coordinates, Quaternion.identity);
-
-        cell.thisObject = newCell;
-        newCell.name = $"Tile({cell.X})-({cell.Y})";
-        cell.ChangeImage(cell.State);
-        return newCell;
     }
 }

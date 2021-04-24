@@ -56,14 +56,12 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Backend.Scripts\Actions\IDraw.cs" />
-    <Compile Include="Assets\Backend.Scripts\Actions\LogDraw.cs" />
     <Compile Include="Assets\Backend.Scripts\Model\Cell.cs" />
     <Compile Include="Assets\Backend.Scripts\Model\Board.cs" />
     <Compile Include="Assets\Backend.Scripts\MapParser.cs" />
     <Compile Include="Assets\Backend.Scripts\Core.cs" />
     <Compile Include="Assets\Frontend.Scripts\BoardManager.cs" />
-    <Compile Include="Assets\Backend.Scripts\Actions\ConsoleDraw.cs" />
+    <Compile Include="Assets\Backend.Scripts\Model\GameObjectCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
