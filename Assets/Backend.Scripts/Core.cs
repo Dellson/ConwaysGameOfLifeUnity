@@ -58,28 +58,42 @@ namespace ConwaysGameOfLife.Backend
 
         public Dictionary<(int, int), Cell> Recalculate(Dictionary<(int, int), Cell> gridOrigin)
         {
-            var grid = new Dictionary<(int, int), Cell>(gridOrigin);
+            //var grid = new Dictionary<(int, int), Cell>(gridOrigin);
+            var resultGrid = new Dictionary<(int, int), Cell>();
             foreach (var key in gridOrigin.Keys)
             {
-                var x = grid[key].X;
-                var y = grid[key].Y;
+                resultGrid.Add(key, gridOrigin[key].GetCopyOfThis());
+                var x = gridOrigin[key].X;
+                var y = gridOrigin[key].Y;
                 int neighbours = 0;
 
                 for (int i = -1; i <= 1; i++)
                 {
                     for (int j = -1; j <= 1; j++)
                     {
-                        if (GetCellState(grid, (x + i, y + j))) neighbours++;
+                        if (GetCellState(gridOrigin, (x + i, y + j))) neighbours++;
                     }
                 }
+                if (gridOrigin[key].State) neighbours--;
 
-                if (grid[key].State && (neighbours < 2 || neighbours > 3))
-                    grid[key].State = false;
-                else if (neighbours == 3) 
-                    grid[key].State = true;
+                if (gridOrigin[key].State)
+                {
+                    if (neighbours < 2 || neighbours > 3)
+                        resultGrid[key].State = false;
+                }
+                else
+                {
+                    if (neighbours == 3)
+                        resultGrid[key].State = true;
+                }
             }
 
-            return grid;
+            foreach (var key in resultGrid.Keys)
+            {
+                gridOrigin[key].State = resultGrid[key].State;
+            }
+
+            return gridOrigin;
         }
     
         /// <summary>
@@ -92,9 +106,18 @@ namespace ConwaysGameOfLife.Backend
         {
             if (!grid.ContainsKey(coords))
             {
-                grid.Add(coords, new Cell(coords, false));
+                //grid.Add(coords, new Cell(coords, false));
+                return false;
             }
-            return grid[coords].State;
+            else if (grid[coords].State)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            //return grid[coords].State;
         }
     }
 }

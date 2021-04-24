@@ -51,5 +51,12 @@ namespace Assets.Backend.Scripts.Model
                     Resources.Load<Sprite>($"Sprites/{state}"); ;
             }
         }
+
+        public Cell GetCopyOfThis()
+        {
+            Cell newCell = new Cell((X, Y), this.State);
+
+            return newCell;
+        }
     }
 }

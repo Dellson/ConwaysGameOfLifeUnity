@@ -28,11 +28,19 @@ public class BoardManager : MonoBehaviour
 
         if (ticks == 200)
         {
-            _core.Recalculate(Items);
+            Items = _core.Recalculate(Items);
 
             foreach (var key in Items.Keys)
             {
                 var cell = Items[key];
+
+                if (cell.thisObject == null)
+                {
+                    GameObject tileGameObject = CreateTile(cell);
+
+                    tileGameObject.transform
+                        .SetParent(transform, false);
+                }
                 cell.ChangeImage(cell.State);
             }
 
@@ -42,6 +50,8 @@ public class BoardManager : MonoBehaviour
 
     public void MapSetup(string levelName)
     {
+        //_parser.MapDimensions.rows = Items.
+
         for (int x = 0; x < _parser.MapDimensions.rows; ++x)
         {
             for (int y = 0; y < _parser.MapDimensions.columns; ++y)
@@ -52,14 +62,6 @@ public class BoardManager : MonoBehaviour
 
                 tileGameObject.transform
                     .SetParent(transform, false);
-                //if (cell.State)
-                //{
-                //    GameObject tileGameObject = CreateTile(cell);
-
-                //    tileGameObject.transform
-                //        .SetParent(transform, false);
-
-                //}
             }
         }
     }
