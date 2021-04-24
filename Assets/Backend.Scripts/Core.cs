@@ -12,7 +12,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             {
                 int neighbours = 0;
                 tempGrid.Add(
-                    key, 
+                    key,
                     originGrid[key].GetCellByValue());
 
                 for (int i = -1; i <= 1; i++)
@@ -20,7 +20,9 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                     for (int j = -1; j <= 1; j++)
                     {
                         if (i == 0 && j == 0) continue;
-                        if (GetCellState(originGrid, (originGrid[key].Cell.X + i, originGrid[key].Cell.Y + j))) neighbours++;
+
+                        var coords = (originGrid[key].Cell.X + i, originGrid[key].Cell.Y + j);
+                        if (originGrid.ContainsKey(coords) && originGrid[coords].Cell.State) neighbours++;
                     }
                 }
 
@@ -41,8 +43,5 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 
             return originGrid;
         }
-
-        private bool GetCellState(Dictionary<(int, int), GameObjectCell> grid, (int, int) coords) =>
-            grid.ContainsKey(coords) && grid[coords].Cell.State;
     }
 }

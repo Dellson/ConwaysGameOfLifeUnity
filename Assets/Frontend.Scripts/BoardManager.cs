@@ -26,9 +26,7 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 
         public void Update()
         {
-            ticks++;
-
-            if (ticks == 200)
+            if (ticks++ == 200)
             {
                 Items = _core.Recalculate(Items);
 
