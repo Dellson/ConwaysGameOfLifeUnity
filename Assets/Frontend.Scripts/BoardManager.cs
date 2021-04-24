@@ -1,40 +1,65 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Assets.Backend.Scripts.Model;
+using ConwaysGameOfLife.Backend;
 
 public class BoardManager : MonoBehaviour
 {
+    static int ticks = 0;
     public GameObject TileTemplate;
     public Sprite AliveTile;
     public Sprite DeadTile;
     private Dictionary<(int, int), Cell> Items;
     private MapParser _parser;
+    private Core _core;
 
     public void Start()
     {
-        MapSetup("level");
+        _core = new Core();
+        _parser = new MapParser("level_1");
+        Items = _parser.GetCellBoard();
+
+        MapSetup("level_1");
     }
 
     public void Update()
     {
-        Debug.Log("tick");
+        ticks++;
+
+        if (ticks == 200)
+        {
+            _core.Recalculate(Items);
+
+            foreach (var key in Items.Keys)
+            {
+                var cell = Items[key];
+                cell.ChangeImage(cell.State);
+            }
+
+            ticks = 0;
+        }
     }
 
     public void MapSetup(string levelName)
     {
-        _parser = new MapParser(levelName);
-
-        var board = _parser.GetCellBoard();
-
-        for (int x = _parser.Eastmost; x < _parser.Westmost; ++x)
+        for (int x = 0; x < _parser.MapDimensions.rows; ++x)
         {
-            for (int y = _parser.Southmost; y < _parser.Northmost; ++y)
+            for (int y = 0; y < _parser.MapDimensions.columns; ++y)
             {
-                var cell = board[(x, y)];
+                var cell = Items[(x, y)];
+
                 GameObject tileGameObject = CreateTile(cell);
 
                 tileGameObject.transform
                     .SetParent(transform, false);
+                //if (cell.State)
+                //{
+                //    GameObject tileGameObject = CreateTile(cell);
+
+                //    tileGameObject.transform
+                //        .SetParent(transform, false);
+
+                //}
             }
         }
     }
@@ -43,9 +68,9 @@ public class BoardManager : MonoBehaviour
     {
         GameObject newCell = Instantiate(TileTemplate, cell.Coordinates, Quaternion.identity);
 
+        cell.thisObject = newCell;
         newCell.name = $"Tile({cell.X})-({cell.Y})";
-        cell.ChangeImage(newCell, "Tile");
-
+        cell.ChangeImage(cell.State);
         return newCell;
     }
 }

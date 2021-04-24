@@ -16,11 +16,12 @@ namespace Assets.Backend.Scripts.Model
         /// 0 stands for DEAD
         /// 1 stands for ALIVE
         /// </summary>
-        public bool State { get; set; }
+        public bool State { get; set; } = false;
 
         private const int cellPixelSize = 64;
-        public readonly Sprite Image;
-        public readonly Vector3 Coordinates;
+        public Sprite Image;
+        public Vector3 Coordinates;
+        public GameObject thisObject;
 
 
         public Cell((int x, int y) coord, bool state)
@@ -29,7 +30,7 @@ namespace Assets.Backend.Scripts.Model
             Y = coord.y;
             State = state;
 
-            Coordinates = new Vector3(coord.x * cellPixelSize, coord.y * cellPixelSize, 1);
+            Coordinates = new Vector3(coord.x * cellPixelSize / 2, coord.y * cellPixelSize / 2, 1);
 
             Image = Resources.Load<Sprite>($"Sprites/{state}");
         }
@@ -40,10 +41,15 @@ namespace Assets.Backend.Scripts.Model
         /// <param name="instance"></param>
         /// <param name="imageHolder"></param>
         /// <param name="image"></param>
-        public void ChangeImage(GameObject instance, string imageHolder, Sprite image = null)
+        public void ChangeImage(bool state)//Sprite image = null)
         {
-            GameObject changeImageObject = instance.transform.Find(imageHolder).gameObject;
-            changeImageObject.GetComponent<SpriteRenderer>().sprite = image;
+            if (true)
+            {
+                string imageHolder = "ImageHolder";
+                GameObject changeImageObject = thisObject.transform.Find(imageHolder).gameObject;
+                changeImageObject.GetComponent<SpriteRenderer>().sprite = 
+                    Resources.Load<Sprite>($"Sprites/{state}"); ;
+            }
         }
     }
 }
