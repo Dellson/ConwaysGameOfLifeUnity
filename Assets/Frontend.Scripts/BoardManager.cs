@@ -14,9 +14,9 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 
         public void Start()
         {
-            // IMapReader mapReader = new ReadPngMap();
-            IMapReader mapReader = new ReadCgolMap();
-            var mapName = "glider_gun";
+            IMapReader mapReader = new ReadPngMap();
+            //IMapReader mapReader = new ReadCgolMap();
+            var mapName = "puffer_train";
             var RawItems = MapParser.GetRawCellBoard(mapName, mapReader);
 
             foreach (var key in RawItems.Keys)

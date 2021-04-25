@@ -7,7 +7,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
         public Cell Cell { get; private set; }
         private Vector3 Coordinates;
         private readonly GameObject AssociatedGameObject;
-        private const int CellPixelSize = 32;
+        private const int CellPixelSize = 8;
 
         public GameObjectCell((int x, int y) coords, bool state, GameObject tileTemplate, Transform transformToAttachTo) 
             : this(new Cell(coords, state), tileTemplate, transformToAttachTo) { }
@@ -24,8 +24,14 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
             AssociatedGameObject.transform.SetParent(transformToAttachTo, false);
         }
 
-        public void UpdateStateImage() =>
-            SpriteRenderer.sprite = Resources.Load<Sprite>($"Sprites/{Cell.State}");
+        public void UpdateStateImage()
+        {
+            if (Cell.State != Cell.PreviousState)
+            {
+                SpriteRenderer.sprite = Resources.Load<Sprite>($"Sprites/{Cell.State}");
+                Cell.PreviousState = Cell.State;
+            }
+        }
 
         /// <summary>
         /// "ImageHolder" is a prefab's child GameObject holding SpriteRenderer
