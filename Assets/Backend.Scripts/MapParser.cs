@@ -1,56 +1,30 @@
 ﻿using System.Collections.Generic;
-using System.IO;
+using ConwaysGameOfLife.Assets.Backend.Scripts.MapReader;
 using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
 
 namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class MapParser
     {
-        private readonly string[] DataToParse;
-        private Dictionary<(int, int), Cell> Items;
-        private const bool dead = false;
-        private const bool alive = true;
-        private int ColumnsCount => MapDimensions.columns;
-        private int RowsCount => MapDimensions.rows;
-
-        public int Northmost { get; private set; } = 0;
-        public int Eastmost { get; private set; } = 0;
-        public int Southmost { get; private set; } = 0;
-        public int Westmost { get; private set; } = 0;
-
-        /// <summary>
-        /// Map parser constructor
-        /// </summary>
-        /// <param name="mapName">Name of the configuration file to be loaded</param>
-        public MapParser(string mapName)
+        public static Dictionary<(int, int), Cell> GetRawCellBoard(string mapName, IMapReader mapReader)
         {
-            string resourcesDirectory = Path.Combine(
-                Directory.GetCurrentDirectory(), "Assets\\Resources\\Maps");
+            var alive = true;
+            var dead = false;
+            var aliveChar = 'x';
+            var deadChar = '.';
+            var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
+            var Items = new Dictionary<(int, int), Cell>();
 
-            string[] mapsFilesDirectories = Directory.GetFiles(resourcesDirectory, $"{mapName}.cgol");
-
-            DataToParse = File.ReadAllLines(
-                Path.Combine(mapsFilesDirectories[0]));
-        }
-
-        public Dictionary<(int, int), Cell> GetRawCellBoard()
-        {
-            Eastmost = DataToParse.Length;
-            Eastmost = DataToParse[0].Length;
-            Southmost = 0;
-            Westmost = 0;
-            Items = new Dictionary<(int, int), Cell>();
-
-            for (int i = 0; i < RowsCount; i++)
+            for (int i = 0; i < DataToParse.Length; i++)
             {
-                for (int j = 0; j < ColumnsCount; j++)
+                for (int j = 0; j < DataToParse[0].Length; j++)
                 {
                     bool state = false;
 
-                    if (DataToParse[i][j] == '.')
-                        state = dead;
-                    else if (DataToParse[i][j] == 'x')
+                    if (DataToParse[i][j] == aliveChar)
                         state = alive;
+                    else if (DataToParse[i][j] == deadChar)
+                        state = dead;
 
                     var cell = new Cell((i, j), state);
                     Items.Add((i, j), cell);
@@ -59,7 +33,5 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 
             return Items;
         }
-
-        public (int columns, int rows) MapDimensions => (DataToParse[0].Length, DataToParse.Length);
     }
 }

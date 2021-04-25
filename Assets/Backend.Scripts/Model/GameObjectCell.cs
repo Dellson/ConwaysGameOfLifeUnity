@@ -7,7 +7,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
         public Cell Cell { get; private set; }
         private Vector3 Coordinates;
         private readonly GameObject AssociatedGameObject;
-        private const int CellPixelSize = 64;
+        private const int CellPixelSize = 32;
 
         public GameObjectCell((int x, int y) coords, bool state, GameObject tileTemplate, Transform transformToAttachTo) 
             : this(new Cell(coords, state), tileTemplate, transformToAttachTo) { }
@@ -15,27 +15,21 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
         public GameObjectCell(Cell cell, GameObject tileTemplate, Transform transformToAttachTo)
         {
             Cell = cell;
-            Coordinates = new Vector3(Cell.X * CellPixelSize / 2, Cell.Y * CellPixelSize / 2, 1);
+            Coordinates = new Vector3(Cell.X * CellPixelSize / 2 - 500, Cell.Y * CellPixelSize / 2 - 500, 1);
 
             AssociatedGameObject = Instantiate(tileTemplate, Coordinates, Quaternion.identity);
             AssociatedGameObject.name = $"Cell({Cell.X})-({Cell.Y})";
 
-            UpdateStateImage(Cell.State, true);
+            UpdateStateImage();
             AssociatedGameObject.transform.SetParent(transformToAttachTo, false);
-        }
-
-        public void UpdateStateImage(bool newState, bool forceUpdate = false)
-        {
-            if (forceUpdate || Cell.State != newState)
-                SpriteRenderer.sprite = Resources.Load<Sprite>($"Sprites/{newState}");
         }
 
         public void UpdateStateImage() =>
             SpriteRenderer.sprite = Resources.Load<Sprite>($"Sprites/{Cell.State}");
 
-        public Cell GetCellByValue() => 
-            new Cell((Cell.X, Cell.Y), Cell.State);
-
+        /// <summary>
+        /// "ImageHolder" is a prefab's child GameObject holding SpriteRenderer
+        /// </summary>
         private SpriteRenderer SpriteRenderer => 
             AssociatedGameObject.transform.Find("ImageHolder").gameObject.GetComponent<SpriteRenderer>();
     }

@@ -5,15 +5,15 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class Core
     {
-        public Dictionary<(int, int), GameObjectCell> Recalculate(Dictionary<(int, int), GameObjectCell> originGrid)
+        public static Dictionary<(int, int), GameObjectCell> Recalculate(Dictionary<(int, int), GameObjectCell> originGrid)
         {
-            var tempGrid = new Dictionary<(int, int), Cell>();
+            var tempGrid = new Dictionary<(int, int), bool>();
             foreach (var key in originGrid.Keys)
             {
                 int neighbours = 0;
                 tempGrid.Add(
                     key,
-                    originGrid[key].GetCellByValue());
+                    originGrid[key].Cell.State);
 
                 for (int i = -1; i <= 1; i++)
                 {
@@ -29,17 +29,17 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                 if (originGrid[key].Cell.State
                     && (neighbours < 2 || neighbours > 3))
                 {
-                        tempGrid[key].State = false;
+                        tempGrid[key] = false;
                 }
                 else if (!originGrid[key].Cell.State
                     && neighbours == 3)
                 {
-                        tempGrid[key].State = true;
+                        tempGrid[key] = true;
                 }
             }
 
             foreach (var key in tempGrid.Keys)
-                originGrid[key].Cell.State = tempGrid[key].State;
+                originGrid[key].Cell.State = tempGrid[key];
 
             return originGrid;
         }

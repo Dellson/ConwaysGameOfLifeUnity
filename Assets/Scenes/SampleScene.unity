@@ -178,8 +178,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TileTemplate: {fileID: 5274627815578616633, guid: af309a6d04b01384f80ee2fa64428769,
     type: 3}
-  AliveTile: {fileID: 21300000, guid: 574a0ed89f811d946962c3fe932041ae, type: 3}
-  DeadTile: {fileID: 21300000, guid: 5056b0725ba6c77498afd1832f2c548e, type: 3}
 --- !u!114 &66984571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,7 +374,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -393,7 +391,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 1
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -667,5 +665,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TileTemplate: {fileID: 0}
-  AliveTile: {fileID: 0}
-  DeadTile: {fileID: 0}

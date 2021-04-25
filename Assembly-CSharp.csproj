@@ -62,6 +62,9 @@
     <Compile Include="Assets\Backend.Scripts\Core.cs" />
     <Compile Include="Assets\Frontend.Scripts\BoardManager.cs" />
     <Compile Include="Assets\Backend.Scripts\Model\GameObjectCell.cs" />
+    <Compile Include="Assets\Backend.Scripts\MapReader\ReadCgolMap.cs" />
+    <Compile Include="Assets\Backend.Scripts\MapReader\ReadPngMap.cs" />
+    <Compile Include="Assets\Backend.Scripts\MapReader\IMapReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
