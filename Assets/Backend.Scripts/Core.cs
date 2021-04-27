@@ -8,6 +8,17 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
         public static Dictionary<(int, int), GameObjectCell> Recalculate(Dictionary<(int, int), GameObjectCell> originGrid)
         {
             var tempGrid = new Dictionary<(int, int), bool>();
+            (int x, int y)[] localCoords = {
+                    (-1, -1),
+                    (-1, 0),
+                    (-1, 1),
+                    (0, -1),
+                    (0, 1),
+                    (1, -1),
+                    (1, 0),
+                    (1, 1)
+                };
+
             foreach (var key in originGrid.Keys)
             {
                 int neighbours = 0;
@@ -15,15 +26,10 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                     key,
                     originGrid[key].Cell.State);
 
-                for (int i = -1; i <= 1; i++)
+                foreach (var (x, y) in localCoords)
                 {
-                    for (int j = -1; j <= 1; j++)
-                    {
-                        if (i == 0 && j == 0) continue;
-
-                        var coords = (originGrid[key].Cell.X + i, originGrid[key].Cell.Y + j);
-                        if (originGrid.ContainsKey(coords) && originGrid[coords].Cell.State) neighbours++;
-                    }
+                    var coords = (originGrid[key].Cell.X + x, originGrid[key].Cell.Y + y);
+                    if (originGrid.ContainsKey(coords) && originGrid[coords].Cell.State) neighbours++;
                 }
 
                 if (originGrid[key].Cell.State
