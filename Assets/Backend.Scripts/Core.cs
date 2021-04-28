@@ -1,23 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
 
 namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class Core
     {
-        public static Dictionary<(int, int), GameObjectCell> Recalculate(Dictionary<(int, int), GameObjectCell> originGrid)
+        public static Dictionary<(int, int), GameObjectCell> Recalculate((int x, int y)[] localCoordinates, Dictionary<(int, int), GameObjectCell> originGrid)
         {
             var tempGrid = new Dictionary<(int, int), bool>();
-            (int x, int y)[] localCoords = {
-                    (-1, -1),
-                    (-1, 0),
-                    (-1, 1),
-                    (0, -1),
-                    (0, 1),
-                    (1, -1),
-                    (1, 0),
-                    (1, 1)
-                };
 
             foreach (var key in originGrid.Keys)
             {
@@ -26,10 +17,11 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                     key,
                     originGrid[key].Cell.State);
 
-                foreach (var (x, y) in localCoords)
+                foreach (var (x, y) in localCoordinates)
                 {
                     var coords = (originGrid[key].Cell.X + x, originGrid[key].Cell.Y + y);
-                    if (originGrid.ContainsKey(coords) && originGrid[coords].Cell.State) neighbours++;
+                    if (!originGrid.ContainsKey(coords)) break;
+                    if (originGrid[coords].Cell.State) neighbours++;
                 }
 
                 if (originGrid[key].Cell.State
@@ -43,9 +35,9 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                         tempGrid[key] = true;
                 }
             }
-
-            foreach (var key in tempGrid.Keys)
-                originGrid[key].Cell.State = tempGrid[key];
+            tempGrid.Keys.ToList().ForEach(key => originGrid[key].Cell.State = tempGrid[key]);
+            //foreach (var key in tempGrid.Keys)
+            //    originGrid[key].Cell.State = tempGrid[key];
 
             return originGrid;
         }

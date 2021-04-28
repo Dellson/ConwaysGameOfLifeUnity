@@ -3,6 +3,7 @@ using UnityEngine;
 using ConwaysGameOfLife.Assets.Backend.Scripts;
 using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
 using ConwaysGameOfLife.Assets.Backend.Scripts.MapReader;
+using System.Diagnostics;
 
 namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 {
@@ -11,6 +12,8 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         public GameObject TileTemplate;
         private Dictionary<(int, int), GameObjectCell> Items = new Dictionary<(int, int), GameObjectCell>();
         private static int ticks = 0;
+        private (int x, int y)[] localCoordinates;
+        Stopwatch stopwatch = Stopwatch.StartNew();
 
         public void Start()
         {
@@ -20,20 +23,31 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
             var RawItems = MapParser.GetRawCellBoard(mapName, mapReader);
 
             foreach (var key in RawItems.Keys)
-                Items.Add(key, new GameObjectCell(RawItems[key], TileTemplate, this.transform));
+                Items.Add(key, new GameObjectCell(RawItems[key], TileTemplate, this.transform)); 
+            
+            localCoordinates = 
+                new (int x, int y)[]
+                 {
+                    (-1, -1),
+                    (-1, 0),
+                    (-1, 1),
+                    (0, -1),
+                    (0, 1),
+                    (1, -1),
+                    (1, 0),
+                    (1, 1)
+                 };
         }
 
         public void Update()
         {
-            if (ticks++ == 10)
-            {
-                Items = Core.Recalculate(Items);
+            Items = Core.Recalculate(localCoordinates, Items);
 
-                foreach (var key in Items.Keys)
-                    Items[key].UpdateStateImage();
-
-                ticks = 0;
-            }
+            foreach (var key in Items.Keys)
+                Items[key].UpdateStateImage();
+            
+            ticks++;
+            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks);
         }
     }
 }
