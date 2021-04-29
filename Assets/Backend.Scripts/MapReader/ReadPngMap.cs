@@ -5,7 +5,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.MapReader
 {
     public class ReadPngMap : IMapReader
     {
-        Texture2D map;
+        private readonly Texture2D map;
 
         public ReadPngMap(string mapName)
         {
@@ -16,19 +16,18 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.MapReader
 
         public string[] ReadMapFile(string mapName, char trueVal, char falseVal)
         {
-            //var map = Resources.Load<Texture2D>($"Maps\\{mapName}");
-            var Output = new string[map.width];
+            var Output = new string[map.height];
 
-            for (int column = 0; column < map.width; column++)
+            for (int row = 0; row < map.height; row++)
             {
                 var sb = new StringBuilder();
-                for (int row = 0; row < map.height; row++)
+                for (int column = 0; column < map.width; column++)
                 {
                     var color = map.GetPixel(column, row);
                     sb.Append(
                         color.maxColorComponent == 0f ? trueVal : falseVal);
                 }
-                Output[column] = sb.ToString();
+                Output[row] = sb.ToString();
             }
 
             return Output;

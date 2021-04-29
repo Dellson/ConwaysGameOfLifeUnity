@@ -6,15 +6,16 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class Core
     {
-        public static List<GameObjectCell> Recalculate(int[] neighboursOffsets, List<GameObjectCell> currentGeneration, int mapWidth, int mapHeight)
+        public static List<GameObjectCell> Recalculate(int[] neighbourPositions, List<GameObjectCell> currentGeneration, int mapWidth, int mapHeight)
         {
             var count = currentGeneration.Count;
+            var currGeneration = new List<bool>(currentGeneration.Select(goc => goc.Cell.State));
             var nextGeneration = new List<bool>(currentGeneration.Select(goc => goc.Cell.State));
 
             for (int index = 0; index < count; index++)
             {
                 int aliveNeighbours = 0;
-                neighboursOffsets =
+                neighbourPositions =
                     new int[]
                     {
                         index - mapWidth - 1,
@@ -22,23 +23,23 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                         index - mapWidth + 1,
                         index - 1,
                         index + 1,
-                        index + mapHeight  - 1,
-                        index + mapHeight,
-                        index + mapHeight + 1
+                        index + mapWidth  - 1,
+                        index + mapWidth,
+                        index + mapWidth + 1
                     };
 
-                foreach (var offset in neighboursOffsets)
+                foreach (var neighbourPosition in neighbourPositions)
                 {
-                    if (offset >= count || offset < 0) continue;
-                    if (currentGeneration[offset].Cell.State) aliveNeighbours++;
+                    if (neighbourPosition >= count || neighbourPosition < 0) continue;
+                    if (currGeneration[neighbourPosition]) aliveNeighbours++;
                 }
 
-                if (currentGeneration[index].Cell.State
+                if (currGeneration[index]
                     && (aliveNeighbours < 2 || aliveNeighbours > 3))
                 {
                     nextGeneration[index] = false;
                 }
-                else if (!currentGeneration[index].Cell.State
+                else if (!currGeneration[index]
                     && aliveNeighbours == 3)
                 {
                     nextGeneration[index] = true;

@@ -42,14 +42,14 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
             var Items = new List<Cell>();
 
-            for (int i = 0; i < DataToParse.Length; i++)
+            for (int row = 0; row < mapReader.GetMapHeight(); row++)
             {
-                for (int j = 0; j < DataToParse[0].Length; j++)
+                for (int column = 0; column < mapReader.GetMapWidth(); column++)
                 {
-                    if (DataToParse[i][j] == aliveChar)
-                        Items.Add(new Cell(i, j, true));
-                    else if (DataToParse[i][j] == deadChar)
-                        Items.Add(new Cell(i, j, false));
+                    if (DataToParse[row][column] == aliveChar)
+                        Items.Add(new Cell(row, column, true));
+                    else if (DataToParse[row][column] == deadChar)
+                        Items.Add(new Cell(row, column, false));
                     else
                         throw new ArgumentException();
                 }

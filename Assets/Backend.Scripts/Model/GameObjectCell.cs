@@ -16,7 +16,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
         public GameObjectCell(Cell cell, GameObject tileTemplate, Transform transformToAttachTo)
         {
             Cell = cell;
-            Coordinates = new Vector3(Cell.X * CellPixelSize / 2 - 900, Cell.Y * CellPixelSize / 2 - 500, 1); // TODO get rid of const 900 and 500 values
+            Coordinates = new Vector3(Cell.X * CellPixelSize / 2 - 0, Cell.Y * CellPixelSize / 2 - 0, 1); // TODO get rid of const 900 and 500 values
 
             AssociatedGameObject = Instantiate(tileTemplate, Coordinates, Quaternion.identity);
             AssociatedGameObject.name = $"Cell({Cell.X})-({Cell.Y})";
