@@ -10,42 +10,38 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
     public class BoardManager : MonoBehaviour
     {
         public GameObject TileTemplate;
-        private Dictionary<(int, int), GameObjectCell> Items = new Dictionary<(int, int), GameObjectCell>();
+        private List<GameObjectCell> Items = new List<GameObjectCell>();
         private static int ticks = 0;
-        private (int x, int y)[] localCoordinates;
+        private int[] neighboursOffets;
         Stopwatch stopwatch;
+        int mapWidth;
+        int mapHeight;
 
         public void Start()
         {
             stopwatch  = Stopwatch.StartNew();
-            IMapReader mapReader = new ReadPngMap();
+            IMapReader mapReader = new ReadPngMap("puffer_train");
+            this.mapWidth = mapReader.GetMapWidth();
+            mapHeight = mapReader.GetMapHeight();
             //IMapReader mapReader = new ReadCgolMap();
             var mapName = "puffer_train";
-            var RawItems = MapParser.GetRawCellBoard(mapName, mapReader);
+            var RawItems = MapParser.GetMapList(mapName, mapReader);
 
-            foreach (var key in RawItems.Keys)
-                Items.Add(key, new GameObjectCell(RawItems[key], TileTemplate, this.transform)); 
-            
-            localCoordinates = 
-                new (int x, int y)[]
-                 {
-                    (-1, -1),
-                    (-1, 0),
-                    (-1, 1),
-                    (0, -1),
-                    (0, 1),
-                    (1, -1),
-                    (1, 0),
-                    (1, 1)
-                 };
+            foreach (var item in RawItems)
+                Items.Add(new GameObjectCell(new Cell(item), TileTemplate, this.transform));
+
+            //neighboursOffets =
+            //    new int[]
+            //    {
+            //        -16, -15, -14, -1, 1, 14, 15, 16
+            //    };
         }
 
         public void Update()
         {
-            Items = Core.Recalculate(localCoordinates, Items);
+            Items = Core.Recalculate(neighboursOffets, Items, mapWidth, mapHeight);
 
-            foreach (var key in Items.Keys)
-                Items[key].UpdateStateImage();
+            Items.ForEach(i => i.UpdateStateImage());
             
             ticks++;
             UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks);

@@ -5,21 +5,30 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.MapReader
 {
     public class ReadPngMap : IMapReader
     {
+        Texture2D map;
+
+        public ReadPngMap(string mapName)
+        {
+            map = Resources.Load<Texture2D>($"Maps\\{mapName}");
+        }
+        public int GetMapHeight() => map.height;
+        public int GetMapWidth() => map.width;
+
         public string[] ReadMapFile(string mapName, char trueVal, char falseVal)
         {
-            var map = Resources.Load<Texture2D>($"Maps\\{mapName}");
+            //var map = Resources.Load<Texture2D>($"Maps\\{mapName}");
             var Output = new string[map.width];
 
-            for (int i = 0; i < map.width; i++)
+            for (int column = 0; column < map.width; column++)
             {
                 var sb = new StringBuilder();
-                for (int j = 0; j < map.height; j++)
+                for (int row = 0; row < map.height; row++)
                 {
-                    var color = map.GetPixel(i, j);
+                    var color = map.GetPixel(column, row);
                     sb.Append(
                         color.maxColorComponent == 0f ? trueVal : falseVal);
                 }
-                Output[i] = sb.ToString();
+                Output[column] = sb.ToString();
             }
 
             return Output;

@@ -6,40 +6,51 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class Core
     {
-        public static Dictionary<(int, int), GameObjectCell> Recalculate((int x, int y)[] localCoordinates, Dictionary<(int, int), GameObjectCell> originGrid)
+        public static List<GameObjectCell> Recalculate(int[] neighboursOffsets, List<GameObjectCell> currentGeneration, int mapWidth, int mapHeight)
         {
-            var tempGrid = new Dictionary<(int, int), bool>();
+            var count = currentGeneration.Count;
+            var nextGeneration = new List<bool>(currentGeneration.Select(goc => goc.Cell.State));
 
-            foreach (var key in originGrid.Keys)
+            for (int index = 0; index < count; index++)
             {
-                int neighbours = 0;
-                tempGrid.Add(
-                    key,
-                    originGrid[key].Cell.State);
+                int aliveNeighbours = 0;
+                neighboursOffsets =
+                    new int[]
+                    {
+                        index - mapWidth - 1,
+                        index - mapWidth,
+                        index - mapWidth + 1,
+                        index - 1,
+                        index + 1,
+                        index + mapHeight  - 1,
+                        index + mapHeight,
+                        index + mapHeight + 1
+                    };
 
-                foreach (var (x, y) in localCoordinates)
+                foreach (var offset in neighboursOffsets)
                 {
-                    var coords = (originGrid[key].Cell.X + x, originGrid[key].Cell.Y + y);
-                    if (!originGrid.ContainsKey(coords)) break;
-                    if (originGrid[coords].Cell.State) neighbours++;
+                    if (offset >= count || offset < 0) continue;
+                    if (currentGeneration[offset].Cell.State) aliveNeighbours++;
                 }
 
-                if (originGrid[key].Cell.State
-                    && (neighbours < 2 || neighbours > 3))
+                if (currentGeneration[index].Cell.State
+                    && (aliveNeighbours < 2 || aliveNeighbours > 3))
                 {
-                        tempGrid[key] = false;
+                    nextGeneration[index] = false;
                 }
-                else if (!originGrid[key].Cell.State
-                    && neighbours == 3)
+                else if (!currentGeneration[index].Cell.State
+                    && aliveNeighbours == 3)
                 {
-                        tempGrid[key] = true;
+                    nextGeneration[index] = true;
                 }
             }
-            tempGrid.Keys.ToList().ForEach(key => originGrid[key].Cell.State = tempGrid[key]);
-            //foreach (var key in tempGrid.Keys)
-            //    originGrid[key].Cell.State = tempGrid[key];
 
-            return originGrid;
+            for (int i = 0; i < count; i++)
+            {
+                currentGeneration[i].Cell.State = nextGeneration[i];
+            }
+
+            return currentGeneration;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ConwaysGameOfLife.Assets.Backend.Scripts.MapReader;
 using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
 
@@ -6,7 +7,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class MapParser
     {
-        public static Dictionary<(int, int), Cell> GetRawCellBoard(string mapName, IMapReader mapReader)
+        public static Dictionary<(int, int), Cell> GetMap(string mapName, IMapReader mapReader)
         {
             var alive = true;
             var dead = false;
@@ -28,6 +29,29 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 
                     var cell = new Cell((i, j), state);
                     Items.Add((i, j), cell);
+                }
+            }
+
+            return Items;
+        }
+
+        public static List<Cell> GetMapList(string mapName, IMapReader mapReader)
+        {
+            var aliveChar = 'x';
+            var deadChar = '.';
+            var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
+            var Items = new List<Cell>();
+
+            for (int i = 0; i < DataToParse.Length; i++)
+            {
+                for (int j = 0; j < DataToParse[0].Length; j++)
+                {
+                    if (DataToParse[i][j] == aliveChar)
+                        Items.Add(new Cell(i, j, true));
+                    else if (DataToParse[i][j] == deadChar)
+                        Items.Add(new Cell(i, j, false));
+                    else
+                        throw new ArgumentException();
                 }
             }
 

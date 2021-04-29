@@ -15,5 +15,21 @@
             State = state;
             PreviousState = !state;
         }
+
+        public Cell(int x, int y, bool state)
+        {
+            X = x;
+            Y = y;
+            State = state;
+            PreviousState = !state;
+        }
+
+        public Cell(Cell cellToCopy)
+        {
+            X = cellToCopy.X;
+            Y = cellToCopy.Y;
+            State = cellToCopy.State;
+            PreviousState = cellToCopy.PreviousState;
+        }
     }
 }
