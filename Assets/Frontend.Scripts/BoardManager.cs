@@ -13,10 +13,11 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         private Dictionary<(int, int), GameObjectCell> Items = new Dictionary<(int, int), GameObjectCell>();
         private static int ticks = 0;
         private (int x, int y)[] localCoordinates;
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        Stopwatch stopwatch;
 
         public void Start()
         {
+            stopwatch  = Stopwatch.StartNew();
             IMapReader mapReader = new ReadPngMap();
             //IMapReader mapReader = new ReadCgolMap();
             var mapName = "puffer_train";
