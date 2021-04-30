@@ -12,11 +12,8 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         public GameObject TileTemplate;
         private List<GameObjectCell> Items = new List<GameObjectCell>();
         private static int ticks = 0;
-        private int[] neighboursOffets;
         Stopwatch stopwatch;
         int mapWidth;
-        int mapHeight;
-        static int tick = 0;
 
         public void Start()
         {
@@ -24,8 +21,7 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
             var mapName = "puffer_train";
             IMapReader mapReader = new ReadPngMap(mapName);
             //IMapReader mapReader = new ReadCgolMap(mapName);
-            this.mapWidth = mapReader.GetMapWidth();
-            mapHeight = mapReader.GetMapHeight();
+            mapWidth = mapReader.GetMapWidth();
             var RawItems = MapParser.GetMapList(mapName, mapReader);
 
             foreach (var item in RawItems)
@@ -34,7 +30,7 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 
         public void Update()
         {
-            Items = Core.Recalculate(neighboursOffets, Items, mapWidth, mapHeight);
+            Items = Core.Recalculate(Items, mapWidth);
 
             Items.ForEach(i => i.UpdateStateImage());
             

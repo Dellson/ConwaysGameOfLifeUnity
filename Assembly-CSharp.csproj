@@ -59,7 +59,6 @@
     <Compile Include="Assets\Backend.Scripts\MapReader\ReadCgolMap.cs" />
     <Compile Include="Assets\Backend.Scripts\Model\Cell.cs" />
     <Compile Include="Assets\Backend.Scripts\MapReader\ReadPngMap.cs" />
-    <Compile Include="Assets\Backend.Scripts\Model\Board.cs" />
     <Compile Include="Assets\Backend.Scripts\MapParser.cs" />
     <Compile Include="Assets\Backend.Scripts\Core.cs" />
     <Compile Include="Assets\Frontend.Scripts\BoardManager.cs" />

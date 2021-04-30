@@ -6,7 +6,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class Core
     {
-        public static List<GameObjectCell> Recalculate(int[] neighbourPositions, List<GameObjectCell> currentGeneration, int mapWidth, int mapHeight)
+        public static List<GameObjectCell> Recalculate(List<GameObjectCell> currentGeneration, int mapWidth)
         {
             var count = currentGeneration.Count;
             var currGeneration = new List<bool>(currentGeneration.Select(goc => goc.Cell.State));
@@ -15,7 +15,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             for (int index = 0; index < count; index++)
             {
                 int aliveNeighbours = 0;
-                neighbourPositions =
+                int[] neighbourPositions =
                     new int[]
                     {
                         index - mapWidth - 1,
