@@ -11,29 +11,43 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
     {
         public GameObject TileTemplate;
         public int TilePixelSize = 8;
-        private List<GameObjectCell> Items = new List<GameObjectCell>();
+        // private List<GameObjectCell> Items = new List<GameObjectCell>();
+        private GameObjectCell[,] Items;
         private static int ticks = 0;
         Stopwatch stopwatch;
         int mapWidth;
+        int mapLength;
 
         public void Start()
         {
-            var mapName = "puffer_train";
+            var mapName = "glider_gun";
             var cells = MapParser.GetMapList<PngMapReader>(mapName);
             mapWidth = MapParser.GetMapWidth();
+            mapLength = MapParser.GetMapHeight();
             stopwatch = Stopwatch.StartNew();
+            CreateObjectsFromList(cells);
 
-            cells.ForEach(cell =>
-                Items.Add(
-                    new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize)
-                    ));
+            //cells.ForEach(cell =>
+            //    Items.Add(
+            //        new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize)
+            //        ));
         }
 
         public void Update()
         {
-            Items = Core.RecalculateWithShiftAlgorithm(Items, mapWidth);            
+            Items = Core.RecalculateWith2DArrayAlgorithm(Items, mapWidth);            
             ticks++;
             UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks);
+        }
+
+        private GameObjectCell[,] CreateObjectsFromList(List<Cell> cells)
+        {
+            Items = new GameObjectCell[mapWidth, mapLength];
+            foreach (var cell in cells)
+            {
+                Items[cell.X, cell.Y] = new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize);
+            }
+            return Items;
         }
     }
 }

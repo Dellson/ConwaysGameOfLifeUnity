@@ -61,6 +61,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             return Items;
         }
 
+        public static int GetMapHeight() => mapReader.GetMapHeight();
         public static int GetMapWidth() => mapReader.GetMapWidth();
     }
 }

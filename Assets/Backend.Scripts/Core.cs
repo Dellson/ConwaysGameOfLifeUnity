@@ -53,5 +53,59 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 
             return currentGeneration;
         }
+
+        public static GameObjectCell[,] RecalculateWith2DArrayAlgorithm(GameObjectCell[,] currentGeneration, int mapWidth)
+        {
+            var xLen = currentGeneration.GetLength(0);
+            var yLen = currentGeneration.GetLength(1);
+            bool[,] nextGeneration = new bool[xLen, yLen];
+
+            for (int x = 0; x < xLen; x++)
+            {
+                for (int y = 0; y < yLen; y++)
+                {
+                    int aliveNeighbours = 0;
+                    (int xpos, int ypos)[] neighbourPositions = new (int, int)[]
+                        {
+                            (x - 1, y - 1),
+                            (x - 1, y),
+                            (x - 1, y + 1),
+                            (x, y - 1),
+                            (x, y + 1),
+                            (x + 1, y - 1),
+                            (x + 1, y),
+                            (x + 1, y + 1)
+                        };
+
+                    foreach (var neighbourPosition in neighbourPositions)
+                    {
+                        if (neighbourPosition.xpos >= xLen || neighbourPosition.xpos < 0
+                            || neighbourPosition.ypos >= yLen || neighbourPosition.ypos < 0) continue;
+                        if (currentGeneration[neighbourPosition.xpos, neighbourPosition.ypos].State) aliveNeighbours++;
+                    }
+
+                    if (currentGeneration[x, y]
+                        && (aliveNeighbours < 2 || aliveNeighbours > 3))
+                    {
+                        nextGeneration[x, y] = false;
+                    }
+                    else if (!currentGeneration[x, y]
+                        && aliveNeighbours == 3)
+                    {
+                        nextGeneration[x, y] = true;
+                    }
+                }
+            }
+
+            for (int i = 0; i < xLen; i++)
+            {
+                for (int j = 0; j < yLen; j++)
+                {
+                    currentGeneration[i, j].State = nextGeneration[i, j];
+                }
+            }
+
+            return currentGeneration;
+        }
     }
 }
