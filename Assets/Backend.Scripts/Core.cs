@@ -9,8 +9,8 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
         public static List<GameObjectCell> Recalculate(List<GameObjectCell> currentGeneration, int mapWidth)
         {
             var count = currentGeneration.Count;
-            var currGeneration = new List<bool>(currentGeneration.Select(goc => goc.Cell.State));
-            var nextGeneration = new List<bool>(currentGeneration.Select(goc => goc.Cell.State));
+            var currGeneration = new List<bool>(currentGeneration.Select(goc => goc.State));
+            var nextGeneration = new List<bool>(currentGeneration.Select(goc => goc.State));
 
             for (int index = 0; index < count; index++)
             {
@@ -48,7 +48,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 
             for (int i = 0; i < count; i++)
             {
-                currentGeneration[i].Cell.State = nextGeneration[i];
+                currentGeneration[i].State = nextGeneration[i];
             }
 
             return currentGeneration;

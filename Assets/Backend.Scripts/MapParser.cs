@@ -7,8 +7,10 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class MapParser
     {
-        public static Dictionary<(int, int), Cell> GetMap(string mapName, IMapReader mapReader)
+        public static Dictionary<(int, int), Cell> GetDictMap(string mapName)
         {
+            IMapReader mapReader = new ReadPngMap(mapName);
+            //IMapReader mapReader = new ReadCgolMap(mapName);
             var alive = true;
             var dead = false;
             var aliveChar = 'x';
@@ -35,8 +37,10 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             return Items;
         }
 
-        public static List<Cell> GetMapList(string mapName, IMapReader mapReader)
+        public static List<Cell> GetMapList(string mapName)
         {
+            IMapReader mapReader = new ReadPngMap(mapName);
+            //IMapReader mapReader = new ReadCgolMap(mapName);
             var aliveChar = 'x';
             var deadChar = '.';
             var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
@@ -57,5 +61,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 
             return Items;
         }
+
+        public static int GetMapWidth(string mapName) => (new ReadPngMap(mapName)).GetMapWidth();
     }
 }
