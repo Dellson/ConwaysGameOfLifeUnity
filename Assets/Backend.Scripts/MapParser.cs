@@ -7,10 +7,10 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class MapParser
     {
-        public static Dictionary<(int, int), Cell> GetDictMap(string mapName)
+        public static IMapReader mapReader;
+        public static Dictionary<(int, int), Cell> GetDictMap<T>(string mapName) where T : IMapReader
         {
-            IMapReader mapReader = new ReadPngMap(mapName);
-            //IMapReader mapReader = new ReadCgolMap(mapName);
+            mapReader = (T)Activator.CreateInstance(typeof(T), mapName);
             var alive = true;
             var dead = false;
             var aliveChar = 'x';
@@ -37,10 +37,9 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             return Items;
         }
 
-        public static List<Cell> GetMapList(string mapName)
+        public static List<Cell> GetMapList<T>(string mapName) where T : IMapReader
         {
-            IMapReader mapReader = new ReadPngMap(mapName);
-            //IMapReader mapReader = new ReadCgolMap(mapName);
+            mapReader = (T)Activator.CreateInstance(typeof(T), mapName);
             var aliveChar = 'x';
             var deadChar = '.';
             var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
@@ -62,7 +61,6 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             return Items;
         }
 
-        // it should not read png only!
-        public static int GetMapWidth(string mapName) => (new ReadPngMap(mapName)).GetMapWidth();
+        public static int GetMapWidth() => mapReader.GetMapWidth();
     }
 }

@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace ConwaysGameOfLife.Assets.Backend.Scripts.MapReader
 {
-    public class ReadPngMap : IMapReader
+    public class PngMapReader : IMapReader
     {
         private readonly Texture2D map;
 
-        public ReadPngMap(string mapName)
+        public PngMapReader(string mapName)
         {
             map = Resources.Load<Texture2D>($"Maps\\{mapName}");
         }

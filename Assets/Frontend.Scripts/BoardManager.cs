@@ -3,6 +3,7 @@ using UnityEngine;
 using ConwaysGameOfLife.Assets.Backend.Scripts;
 using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
 using System.Diagnostics;
+using ConwaysGameOfLife.Assets.Backend.Scripts.MapReader;
 
 namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 {
@@ -18,8 +19,8 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         public void Start()
         {
             var mapName = "puffer_train";
-            var cells = MapParser.GetMapList(mapName);
-            mapWidth = MapParser.GetMapWidth(mapName);
+            var cells = MapParser.GetMapList<PngMapReader>(mapName);
+            mapWidth = MapParser.GetMapWidth();
             stopwatch = Stopwatch.StartNew();
 
             cells.ForEach(cell =>

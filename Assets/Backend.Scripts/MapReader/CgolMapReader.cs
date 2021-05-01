@@ -2,10 +2,10 @@
 
 namespace ConwaysGameOfLife.Assets.Backend.Scripts.MapReader
 {
-    public class ReadCgolMap : IMapReader
+    public class CgolMapReader : IMapReader
     {
         private string[] map;
-        public ReadCgolMap(string mapName)
+        public CgolMapReader(string mapName)
         {
             map = File.ReadAllLines(
                 Path.Combine(
