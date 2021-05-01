@@ -2,7 +2,6 @@
 using UnityEngine;
 using ConwaysGameOfLife.Assets.Backend.Scripts;
 using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
-using ConwaysGameOfLife.Assets.Backend.Scripts.MapReader;
 using System.Diagnostics;
 
 namespace ConwaysGameOfLife.Assets.Frontend.Scripts
@@ -18,20 +17,20 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 
         public void Start()
         {
-            stopwatch  = Stopwatch.StartNew();
             var mapName = "puffer_train";
-            var RawItems = MapParser.GetMapList(mapName);
+            var cells = MapParser.GetMapList(mapName);
             mapWidth = MapParser.GetMapWidth(mapName);
+            stopwatch = Stopwatch.StartNew();
 
-            foreach (var item in RawItems)
+            cells.ForEach(item =>
                 Items.Add(
                     new GameObjectCell(new Cell(item), TileTemplate, this.transform, TilePixelSize)
-                    );
+                    ));
         }
 
         public void Update()
         {
-            Items = Core.Recalculate(Items, mapWidth);            
+            Items = Core.RecalculateWithShiftAlgorithm(Items, mapWidth);            
             ticks++;
             UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks);
         }

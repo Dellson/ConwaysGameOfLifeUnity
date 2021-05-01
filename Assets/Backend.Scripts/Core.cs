@@ -6,7 +6,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class Core
     {
-        public static List<GameObjectCell> Recalculate(List<GameObjectCell> currentGeneration, int mapWidth)
+        public static List<GameObjectCell> RecalculateWithShiftAlgorithm(List<GameObjectCell> currentGeneration, int mapWidth)
         {
             var count = currentGeneration.Count;
             var currGeneration = new List<bool>(currentGeneration.Select(goc => goc.State));

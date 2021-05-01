@@ -18,9 +18,9 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
             var Items = new Dictionary<(int, int), Cell>();
 
-            for (int i = 0; i < DataToParse.Length; i++)
+            for (int i = 0; i < mapReader.GetMapHeight(); i++)
             {
-                for (int j = 0; j < DataToParse[0].Length; j++)
+                for (int j = 0; j < mapReader.GetMapWidth(); j++)
                 {
                     bool state = false;
 
