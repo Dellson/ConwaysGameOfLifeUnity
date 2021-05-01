@@ -22,9 +22,9 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
             mapWidth = MapParser.GetMapWidth(mapName);
             stopwatch = Stopwatch.StartNew();
 
-            cells.ForEach(item =>
+            cells.ForEach(cell =>
                 Items.Add(
-                    new GameObjectCell(new Cell(item), TileTemplate, this.transform, TilePixelSize)
+                    new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize)
                     ));
         }
 

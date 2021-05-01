@@ -51,9 +51,9 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                 for (int column = 0; column < mapReader.GetMapWidth(); column++)
                 {
                     if (DataToParse[row][column] == aliveChar)
-                        Items.Add(new Cell(row, column, true));
+                        Items.Add(new Cell(column, mapReader.GetMapHeight() - row - 1, true));
                     else if (DataToParse[row][column] == deadChar)
-                        Items.Add(new Cell(row, column, false));
+                        Items.Add(new Cell(column, mapReader.GetMapHeight() - row - 1, false));
                     else
                         throw new ArgumentException();
                 }
@@ -62,6 +62,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             return Items;
         }
 
+        // it should not read png only!
         public static int GetMapWidth(string mapName) => (new ReadPngMap(mapName)).GetMapWidth();
     }
 }
