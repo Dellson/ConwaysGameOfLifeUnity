@@ -27,7 +27,7 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.MapReader
                     sb.Append(
                         color.maxColorComponent == 0f ? trueVal : falseVal);
                 }
-                Output[row] = sb.ToString();
+                Output[map.height - row - 1] = sb.ToString();
             }
 
             return Output;
