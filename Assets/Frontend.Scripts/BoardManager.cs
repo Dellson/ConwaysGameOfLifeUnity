@@ -10,7 +10,6 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
     public class BoardManager : MonoBehaviour
     {
         public GameObject TileTemplate;
-        public int TilePixelSize = 8;
         private List<GameObjectCell> Items = new List<GameObjectCell>();
         private static int ticks = 0;
         Stopwatch stopwatch;
@@ -19,14 +18,13 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         public void Start()
         {
             var mapName = "puffer_train";
-            var cells = MapParser.GetMapList<PngMapReader>(mapName);
-            mapWidth = MapParser.GetMapWidth();
             stopwatch = Stopwatch.StartNew();
 
-            cells.ForEach(cell =>
-                Items.Add(
-                    new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize)
-                    ));
+            var cells = MapParser.GetMapList<PngMapReader>(mapName);
+            mapWidth = MapParser.GetMapWidth();
+
+            cells.ForEach(cell => Items.Add(
+                new GameObjectCell(cell, TileTemplate, this.transform)));
         }
 
         public void Update()
