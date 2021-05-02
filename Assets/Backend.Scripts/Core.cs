@@ -56,50 +56,53 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 
         public static GameObjectCell[,] RecalculateWith2DArrayAlgorithm(GameObjectCell[,] currentGeneration, int mapWidth)
         {
-            var xLen = currentGeneration.GetLength(0);
-            var yLen = currentGeneration.GetLength(1);
-            bool[,] nextGeneration = new bool[xLen, yLen];
+            var height = currentGeneration.GetLength(0);
+            var width = currentGeneration.GetLength(1);
+            bool[,] nextGeneration = new bool[height, width];
 
-            for (int x = 0; x < xLen; x++)
+            for (int i = 0; i < height; i++)
             {
-                for (int y = 0; y < yLen; y++)
+                for (int j = 0; j < width; j++)
                 {
+                    var state = false;
                     int aliveNeighbours = 0;
-                    (int xpos, int ypos)[] neighbourPositions = new (int, int)[]
+
+                    (int y, int x)[] neighbourPositions = new (int, int)[]
                         {
-                            (x - 1, y - 1),
-                            (x - 1, y),
-                            (x - 1, y + 1),
-                            (x, y - 1),
-                            (x, y + 1),
-                            (x + 1, y - 1),
-                            (x + 1, y),
-                            (x + 1, y + 1)
+                            (i - 1, j - 1),
+                            (i - 1, j),
+                            (i - 1, j + 1),
+                            (i, j - 1),
+                            (i, j + 1),
+                            (i + 1, j - 1),
+                            (i + 1, j),
+                            (i + 1, j + 1)
                         };
 
-                    foreach (var neighbourPosition in neighbourPositions)
+                    foreach (var (y, x) in neighbourPositions)
                     {
-                        if (neighbourPosition.xpos >= xLen || neighbourPosition.xpos < 0
-                            || neighbourPosition.ypos >= yLen || neighbourPosition.ypos < 0) continue;
-                        if (currentGeneration[neighbourPosition.xpos, neighbourPosition.ypos].State) aliveNeighbours++;
+                        if (x >= width || x < 0 || y >= height || y < 0) continue;
+                        if (currentGeneration[y, x].State) aliveNeighbours++;
                     }
 
-                    if (currentGeneration[x, y]
-                        && (aliveNeighbours < 2 || aliveNeighbours > 3))
+                    if (currentGeneration[i, j]
+                        && (aliveNeighbours == 2 || aliveNeighbours == 3))
                     {
-                        nextGeneration[x, y] = false;
+                        state = true;
                     }
-                    else if (!currentGeneration[x, y]
+                    else if (!currentGeneration[i, j]
                         && aliveNeighbours == 3)
                     {
-                        nextGeneration[x, y] = true;
+                        state = true;
                     }
+
+                    nextGeneration[i, j] = state;
                 }
             }
 
-            for (int i = 0; i < xLen; i++)
+            for (int i = 0; i < height; i++)
             {
-                for (int j = 0; j < yLen; j++)
+                for (int j = 0; j < width; j++)
                 {
                     currentGeneration[i, j].State = nextGeneration[i, j];
                 }

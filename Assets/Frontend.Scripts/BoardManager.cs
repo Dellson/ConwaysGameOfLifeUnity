@@ -16,14 +16,14 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         private static int ticks = 0;
         Stopwatch stopwatch;
         int mapWidth;
-        int mapLength;
+        int mapHeight;
 
         public void Start()
         {
             var mapName = "glider_gun";
             var cells = MapParser.GetMapList<PngMapReader>(mapName);
             mapWidth = MapParser.GetMapWidth();
-            mapLength = MapParser.GetMapHeight();
+            mapHeight = MapParser.GetMapHeight();
             stopwatch = Stopwatch.StartNew();
             CreateObjectsFromList(cells);
 
@@ -35,17 +35,16 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 
         public void Update()
         {
-            Items = Core.RecalculateWith2DArrayAlgorithm(Items, mapWidth);            
-            ticks++;
-            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks);
+            Items = Core.RecalculateWith2DArrayAlgorithm(Items, mapWidth);
+            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks++);
         }
 
         private GameObjectCell[,] CreateObjectsFromList(List<Cell> cells)
         {
-            Items = new GameObjectCell[mapWidth, mapLength];
+            Items = new GameObjectCell[mapHeight, mapWidth];
             foreach (var cell in cells)
             {
-                Items[cell.X, cell.Y] = new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize);
+                Items[cell.Y, cell.X] = new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize);
             }
             return Items;
         }
