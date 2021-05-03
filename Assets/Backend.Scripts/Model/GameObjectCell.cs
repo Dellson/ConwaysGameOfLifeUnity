@@ -12,13 +12,21 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
         private readonly GameObject AssociatedGameObject;
         private readonly SpriteRenderer SpriteRenderer;
 
-        public GameObjectCell((int x, int y) coords, bool state, GameObject tileTemplate, Transform transformToAttachTo, int cellPixelSize) 
-            : this(new Cell(coords, state), tileTemplate, transformToAttachTo, cellPixelSize) { }
+        public GameObjectCell((int x, int y) coords, bool state, GameObject tileTemplate, Transform transformToAttachTo) 
+            : this(new Cell(coords, state), tileTemplate, transformToAttachTo) { }
 
         // TODO consider creating a factory
-        public GameObjectCell(Cell cell, GameObject tileTemplate, Transform transformToAttachTo, int cellPixelSize)
+        public GameObjectCell(Cell cell, GameObject tileTemplate, Transform transformToAttachTo)
         {
-            Vector3 Coordinates = new Vector3(cell.Y * cellPixelSize / 2, cell.X * cellPixelSize / 2, 1);
+            var cellPixelSize = tileTemplate.transform.Find("ImageHolder").GetComponent<RectTransform>().rect.width; // .rect.height will work the same as long as prefab is a square...
+            var gameBoardRect = transformToAttachTo.parent.GetComponent<RectTransform>().rect;
+            var (width, height) = (gameBoardRect.width, gameBoardRect.height);
+
+            Vector3 Coordinates = new Vector3(
+                cell.Y * cellPixelSize / 2 - (height / 2), 
+                cell.X * cellPixelSize / 2 - (width / 2), 
+                1);
+
             AssociatedGameObject = Instantiate(tileTemplate, Coordinates, Quaternion.identity);
             AssociatedGameObject.name = $"Cell({cell.Y})-({cell.X})";
 

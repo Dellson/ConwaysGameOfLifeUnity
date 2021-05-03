@@ -8,13 +8,12 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
     public class MapParser
     {
         public static IMapReader mapReader;
+        private const char aliveChar = 'x';
+        private const char deadChar = '.';
+
         public static Dictionary<(int, int), Cell> GetDictMap<T>(string mapName) where T : IMapReader
         {
             mapReader = (T)Activator.CreateInstance(typeof(T), mapName);
-            var alive = true;
-            var dead = false;
-            var aliveChar = 'x';
-            var deadChar = '.';
             var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
             var Items = new Dictionary<(int, int), Cell>();
 
@@ -22,12 +21,14 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             {
                 for (int j = 0; j < mapReader.GetMapWidth(); j++)
                 {
-                    bool state = false;
+                    bool state;
 
                     if (DataToParse[i][j] == aliveChar)
-                        state = alive;
+                        state = true;
                     else if (DataToParse[i][j] == deadChar)
-                        state = dead;
+                        state = false;
+                    else
+                        throw new ArgumentException();
 
                     var cell = new Cell((i, j), state);
                     Items.Add((i, j), cell);
@@ -40,8 +41,6 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
         public static List<Cell> GetMapList<T>(string mapName) where T : IMapReader
         {
             mapReader = (T)Activator.CreateInstance(typeof(T), mapName);
-            var aliveChar = 'x';
-            var deadChar = '.';
             var DataToParse = mapReader.ReadMapFile(mapName, aliveChar, deadChar);
             var Items = new List<Cell>();
 

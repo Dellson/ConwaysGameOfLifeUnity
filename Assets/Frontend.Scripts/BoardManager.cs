@@ -31,6 +31,8 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         {
             Items = Core.RecalculateWith2DArrayAlgorithm(Items);
             UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks++);
+            cells.ForEach(cell => Items.Add(
+                new GameObjectCell(cell, TileTemplate, this.transform)));
         }
 
         private GameObjectCell[,] CreateObjectsFromList(List<Cell> cells)
