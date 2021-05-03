@@ -11,7 +11,6 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
     {
         public GameObject TileTemplate;
         public int TilePixelSize = 8;
-        // private List<GameObjectCell> Items = new List<GameObjectCell>();
         private GameObjectCell[,] Items;
         private static int ticks = 0;
         Stopwatch stopwatch;
@@ -20,32 +19,33 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 
         public void Start()
         {
-            var mapName = "glider_gun";
+            var mapName = "puffer_train";
             var cells = MapParser.GetMapList<PngMapReader>(mapName);
             mapWidth = MapParser.GetMapWidth();
             mapHeight = MapParser.GetMapHeight();
             stopwatch = Stopwatch.StartNew();
             CreateObjectsFromList(cells);
-
-            //cells.ForEach(cell =>
-            //    Items.Add(
-            //        new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize)
-            //        ));
         }
 
         public void Update()
         {
-            Items = Core.RecalculateWith2DArrayAlgorithm(Items, mapWidth);
+            Items = Core.RecalculateWith2DArrayAlgorithm(Items);
             UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks++);
         }
 
         private GameObjectCell[,] CreateObjectsFromList(List<Cell> cells)
         {
-            Items = new GameObjectCell[mapHeight, mapWidth];
-            foreach (var cell in cells)
+            Items = new GameObjectCell[mapHeight,mapWidth];
+
+            for (int i = 0; i < mapHeight; i++)
             {
-                Items[cell.Y, cell.X] = new GameObjectCell(cell, TileTemplate, this.transform, TilePixelSize);
+                for (int j = 0; j < mapWidth; j++)
+                {
+                    var match = cells.Find(cell => cell.Y == j && cell.X == i);
+                    Items[i,j] = new GameObjectCell(match, TileTemplate, this.transform, TilePixelSize);
+                }
             }
+
             return Items;
         }
     }

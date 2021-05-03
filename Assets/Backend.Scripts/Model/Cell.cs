@@ -2,32 +2,32 @@
 {
     public class Cell
     {
-        public int X { get; set; }
         public int Y { get; set; }
+        public int X { get; set; }
         public bool State { get; set; } = false;
         public bool PreviousState { get; set; } = false;
 
 
-        public Cell((int x, int y) coord, bool state)
+        public Cell((int y, int x) coord, bool state)
         {
-            X = coord.x;
             Y = coord.y;
+            X = coord.x;
             State = state;
             PreviousState = !state;
         }
 
-        public Cell(int x, int y, bool state)
+        public Cell(int y, int x, bool state)
         {
-            X = x;
             Y = y;
+            X = x;
             State = state;
             PreviousState = !state;
         }
 
         public Cell(Cell cellToCopy)
         {
-            X = cellToCopy.X;
             Y = cellToCopy.Y;
+            X = cellToCopy.X;
             State = cellToCopy.State;
             PreviousState = cellToCopy.PreviousState;
         }

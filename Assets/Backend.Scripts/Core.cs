@@ -54,19 +54,17 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
             return currentGeneration;
         }
 
-        public static GameObjectCell[,] RecalculateWith2DArrayAlgorithm(GameObjectCell[,] currentGeneration, int mapWidth)
+        public static GameObjectCell[,] RecalculateWith2DArrayAlgorithm(GameObjectCell[,] currentGeneration)
         {
             var height = currentGeneration.GetLength(0);
             var width = currentGeneration.GetLength(1);
             bool[,] nextGeneration = new bool[height, width];
 
-            for (int i = 0; i < height; i++)
+            for (int i = 0; i < height; ++i)
             {
-                for (int j = 0; j < width; j++)
+                for (int j = 0; j < width; ++j)
                 {
-                    var state = false;
                     int aliveNeighbours = 0;
-
                     (int y, int x)[] neighbourPositions = new (int, int)[]
                         {
                             (i - 1, j - 1),
@@ -79,24 +77,23 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
                             (i + 1, j + 1)
                         };
 
+                    nextGeneration[i, j] = currentGeneration[i, j].State;
+
                     foreach (var (y, x) in neighbourPositions)
                     {
                         if (x >= width || x < 0 || y >= height || y < 0) continue;
                         if (currentGeneration[y, x].State) aliveNeighbours++;
                     }
 
-                    if (currentGeneration[i, j]
-                        && (aliveNeighbours == 2 || aliveNeighbours == 3))
+                    if (currentGeneration[i,j]
+                        && (aliveNeighbours < 2 || aliveNeighbours > 3))
                     {
-                        state = true;
+                        nextGeneration[i,j] = false;
                     }
-                    else if (!currentGeneration[i, j]
-                        && aliveNeighbours == 3)
+                    else if (aliveNeighbours == 3)
                     {
-                        state = true;
+                        nextGeneration[i,j] = true;
                     }
-
-                    nextGeneration[i, j] = state;
                 }
             }
 
