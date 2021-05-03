@@ -12,6 +12,7 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         public GameObject TileTemplate;
         public int TilePixelSize = 8;
         private GameObjectCell[,] Items;
+        private List<GameObjectCell> Items2 = new List<GameObjectCell>();
         private static int ticks = 0;
         Stopwatch stopwatch;
         int mapWidth;
@@ -24,18 +25,17 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
             mapWidth = MapParser.GetMapWidth();
             mapHeight = MapParser.GetMapHeight();
             stopwatch = Stopwatch.StartNew();
-            CreateObjectsFromList(cells);
+            Populate2DArrayItems(cells);
+            //Items2 = GetListItems(cells);
         }
 
         public void Update()
         {
-            Items = Core.RecalculateWith2DArrayAlgorithm(Items);
+            Items2 = Core.RecalculateWithShiftAlgorithm(Items2, mapWidth);
             UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks++);
-            cells.ForEach(cell => Items.Add(
-                new GameObjectCell(cell, TileTemplate, this.transform)));
         }
 
-        private GameObjectCell[,] CreateObjectsFromList(List<Cell> cells)
+        private GameObjectCell[,] Populate2DArrayItems(List<Cell> cells)
         {
             Items = new GameObjectCell[mapHeight,mapWidth];
 
@@ -44,10 +44,19 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
                 for (int j = 0; j < mapWidth; j++)
                 {
                     var match = cells.Find(cell => cell.Y == j && cell.X == i);
-                    Items[i,j] = new GameObjectCell(match, TileTemplate, this.transform, TilePixelSize);
+                    Items[i,j] = new GameObjectCell(match, TileTemplate, this.transform);
                 }
             }
 
+            return Items;
+        }
+
+        private List<GameObjectCell> GetListItems(List<Cell> cells)
+        {
+            var Items = new List<GameObjectCell>();
+
+            cells.ForEach(cell => Items.Add(
+                new GameObjectCell(cell, TileTemplate, this.transform)));
             return Items;
         }
     }
