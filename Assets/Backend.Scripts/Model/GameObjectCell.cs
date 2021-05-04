@@ -23,8 +23,8 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
             var (width, height) = (gameBoardRect.width, gameBoardRect.height);
 
             Vector3 Coordinates = new Vector3(
-                cell.Y * cellPixelSize / 2 - (height / 2), 
-                cell.X * cellPixelSize / 2 - (width / 2), 
+                cell.Y * cellPixelSize / 2 - (height / 2 / 2), 
+                cell.X * cellPixelSize / 2 - (width / 2 / 2), 
                 1);
 
             AssociatedGameObject = Instantiate(tileTemplate, Coordinates, Quaternion.identity);

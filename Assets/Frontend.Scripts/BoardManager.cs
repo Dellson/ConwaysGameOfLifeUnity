@@ -12,7 +12,7 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
         public GameObject TileTemplate;
         public int TilePixelSize = 8;
         private GameObjectCell[,] Items;
-        private List<GameObjectCell> Items2 = new List<GameObjectCell>();
+        //private List<GameObjectCell> Items2 = new List<GameObjectCell>();
         private static int ticks = 0;
         Stopwatch stopwatch;
         int mapWidth;
@@ -31,7 +31,7 @@ namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 
         public void Update()
         {
-            Items2 = Core.RecalculateWithShiftAlgorithm(Items2, mapWidth);
+            Items = Core.RecalculateWith2DArrayAlgorithm(Items);
             UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks++);
         }
 
