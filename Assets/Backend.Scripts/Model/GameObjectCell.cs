@@ -4,37 +4,36 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts.Model
 {
     public class GameObjectCell : ScriptableObject
     {
-        public Cell Cell { get; private set; }
-        private Vector3 Coordinates;
+        public bool State
+        {
+            get => SpriteRenderer.enabled;
+            set => SpriteRenderer.enabled = value;
+        }
         private readonly GameObject AssociatedGameObject;
         private readonly SpriteRenderer SpriteRenderer;
-        private const int CellPixelSize = 8;
 
         public GameObjectCell((int x, int y) coords, bool state, GameObject tileTemplate, Transform transformToAttachTo) 
             : this(new Cell(coords, state), tileTemplate, transformToAttachTo) { }
 
+        // TODO consider creating a factory
         public GameObjectCell(Cell cell, GameObject tileTemplate, Transform transformToAttachTo)
         {
-            Cell = cell;
-            Coordinates = new Vector3(Cell.X * CellPixelSize / 2 - 900, Cell.Y * CellPixelSize / 2 - 500, 1); // TODO get rid of const 900 and 500 values
+            var cellPixelSize = tileTemplate.transform.Find("ImageHolder").GetComponent<RectTransform>().rect.width; // .rect.height will work the same as long as prefab is a square...
+            var gameBoardRect = transformToAttachTo.parent.GetComponent<RectTransform>().rect;
+            var (width, height) = (gameBoardRect.width, gameBoardRect.height);
+
+            Vector3 Coordinates = new Vector3(
+                cell.Y * cellPixelSize / 2 - (height / 2 / 2), 
+                cell.X * cellPixelSize / 2 - (width / 2 / 2), 
+                1);
 
             AssociatedGameObject = Instantiate(tileTemplate, Coordinates, Quaternion.identity);
-            AssociatedGameObject.name = $"Cell({Cell.X})-({Cell.Y})";
+            AssociatedGameObject.name = $"Cell({cell.Y})-({cell.X})";
 
             SpriteRenderer = AssociatedGameObject.transform.Find("ImageHolder").gameObject.GetComponent<SpriteRenderer>();
-            SpriteRenderer.sprite = Resources.Load<Sprite>($"Sprites/true");
-            UpdateStateImage();
+            State = cell.State;
 
             AssociatedGameObject.transform.SetParent(transformToAttachTo, false);
         }
-
-        public void UpdateStateImage()
-        {
-            if (Cell.State != Cell.PreviousState)
-            {
-                SpriteRenderer.enabled = Cell.State;
-                Cell.PreviousState = Cell.State;
-            }
-        }            
     }
 }

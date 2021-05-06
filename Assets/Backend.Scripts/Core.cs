@@ -6,40 +6,106 @@ namespace ConwaysGameOfLife.Assets.Backend.Scripts
 {
     public class Core
     {
-        public static Dictionary<(int, int), GameObjectCell> Recalculate((int x, int y)[] localCoordinates, Dictionary<(int, int), GameObjectCell> originGrid)
+        public static List<GameObjectCell> RecalculateWithShiftAlgorithm(List<GameObjectCell> currentGeneration, int mapWidth)
         {
-            var tempGrid = new Dictionary<(int, int), bool>();
+            var count = currentGeneration.Count;
+            var currGeneration = new List<bool>(currentGeneration.Select(goc => goc.State));
+            var nextGeneration = new List<bool>(currentGeneration.Select(goc => goc.State));
 
-            foreach (var key in originGrid.Keys)
+            for (int index = 0; index < count; index++)
             {
-                int neighbours = 0;
-                tempGrid.Add(
-                    key,
-                    originGrid[key].Cell.State);
+                int aliveNeighbours = 0;
+                int[] neighbourPositions =
+                    new int[]
+                    {
+                        index - mapWidth - 1,
+                        index - mapWidth,
+                        index - mapWidth + 1,
+                        index - 1,
+                        index + 1,
+                        index + mapWidth  - 1,
+                        index + mapWidth,
+                        index + mapWidth + 1
+                    };
 
-                foreach (var (x, y) in localCoordinates)
+                foreach (var neighbourPosition in neighbourPositions)
                 {
-                    var coords = (originGrid[key].Cell.X + x, originGrid[key].Cell.Y + y);
-                    if (!originGrid.ContainsKey(coords)) break;
-                    if (originGrid[coords].Cell.State) neighbours++;
+                    if (neighbourPosition >= count || neighbourPosition < 0) continue;
+                    if (currGeneration[neighbourPosition]) aliveNeighbours++;
                 }
 
-                if (originGrid[key].Cell.State
-                    && (neighbours < 2 || neighbours > 3))
+                if (currGeneration[index]
+                    && (aliveNeighbours < 2 || aliveNeighbours > 3))
                 {
-                        tempGrid[key] = false;
+                    nextGeneration[index] = false;
                 }
-                else if (!originGrid[key].Cell.State
-                    && neighbours == 3)
+                else if (!currGeneration[index]
+                    && aliveNeighbours == 3)
                 {
-                        tempGrid[key] = true;
+                    nextGeneration[index] = true;
                 }
             }
-            tempGrid.Keys.ToList().ForEach(key => originGrid[key].Cell.State = tempGrid[key]);
-            //foreach (var key in tempGrid.Keys)
-            //    originGrid[key].Cell.State = tempGrid[key];
 
-            return originGrid;
+            for (int i = 0; i < count; i++)
+            {
+                currentGeneration[i].State = nextGeneration[i];
+            }
+
+            return currentGeneration;
+        }
+
+        public static GameObjectCell[,] RecalculateWith2DArrayAlgorithm(GameObjectCell[,] currentGeneration)
+        {
+            var height = currentGeneration.GetLength(0);
+            var width = currentGeneration.GetLength(1);
+            bool[,] nextGeneration = new bool[height, width];
+
+            for (int i = 0; i < height; ++i)
+            {
+                for (int j = 0; j < width; ++j)
+                {
+                    int aliveNeighbours = 0;
+                    (int y, int x)[] neighbourPositions = new (int, int)[]
+                        {
+                            (i - 1, j - 1),
+                            (i - 1, j),
+                            (i - 1, j + 1),
+                            (i, j - 1),
+                            (i, j + 1),
+                            (i + 1, j - 1),
+                            (i + 1, j),
+                            (i + 1, j + 1)
+                        };
+
+                    nextGeneration[i, j] = currentGeneration[i, j].State;
+
+                    foreach (var (y, x) in neighbourPositions)
+                    {
+                        if (x >= width || x < 0 || y >= height || y < 0) continue;
+                        if (currentGeneration[y, x].State) aliveNeighbours++;
+                    }
+
+                    if (currentGeneration[i,j]
+                        && (aliveNeighbours < 2 || aliveNeighbours > 3))
+                    {
+                        nextGeneration[i,j] = false;
+                    }
+                    else if (aliveNeighbours == 3)
+                    {
+                        nextGeneration[i,j] = true;
+                    }
+                }
+            }
+
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    currentGeneration[i, j].State = nextGeneration[i, j];
+                }
+            }
+
+            return currentGeneration;
         }
     }
 }

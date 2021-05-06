@@ -2,53 +2,62 @@
 using UnityEngine;
 using ConwaysGameOfLife.Assets.Backend.Scripts;
 using ConwaysGameOfLife.Assets.Backend.Scripts.Model;
-using ConwaysGameOfLife.Assets.Backend.Scripts.MapReader;
 using System.Diagnostics;
+using ConwaysGameOfLife.Assets.Backend.Scripts.MapReader;
 
 namespace ConwaysGameOfLife.Assets.Frontend.Scripts
 {
     public class BoardManager : MonoBehaviour
     {
         public GameObject TileTemplate;
-        private Dictionary<(int, int), GameObjectCell> Items = new Dictionary<(int, int), GameObjectCell>();
+        public int TilePixelSize = 8;
+        private GameObjectCell[,] Items;
+        //private List<GameObjectCell> Items2 = new List<GameObjectCell>();
         private static int ticks = 0;
-        private (int x, int y)[] localCoordinates;
         Stopwatch stopwatch;
+        int mapWidth;
+        int mapHeight;
 
         public void Start()
         {
-            stopwatch  = Stopwatch.StartNew();
-            IMapReader mapReader = new ReadPngMap();
-            //IMapReader mapReader = new ReadCgolMap();
             var mapName = "puffer_train";
-            var RawItems = MapParser.GetRawCellBoard(mapName, mapReader);
-
-            foreach (var key in RawItems.Keys)
-                Items.Add(key, new GameObjectCell(RawItems[key], TileTemplate, this.transform)); 
-            
-            localCoordinates = 
-                new (int x, int y)[]
-                 {
-                    (-1, -1),
-                    (-1, 0),
-                    (-1, 1),
-                    (0, -1),
-                    (0, 1),
-                    (1, -1),
-                    (1, 0),
-                    (1, 1)
-                 };
+            var cells = MapParser.GetMapList<PngMapReader>(mapName);
+            mapWidth = MapParser.GetMapWidth();
+            mapHeight = MapParser.GetMapHeight();
+            stopwatch = Stopwatch.StartNew();
+            Populate2DArrayItems(cells);
+            //Items2 = GetListItems(cells);
         }
 
         public void Update()
         {
-            Items = Core.Recalculate(localCoordinates, Items);
+            Items = Core.RecalculateWith2DArrayAlgorithm(Items);
+            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks++);
+        }
 
-            foreach (var key in Items.Keys)
-                Items[key].UpdateStateImage();
-            
-            ticks++;
-            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds + "\t\t" + ticks);
+        private GameObjectCell[,] Populate2DArrayItems(List<Cell> cells)
+        {
+            Items = new GameObjectCell[mapHeight,mapWidth];
+
+            for (int i = 0; i < mapHeight; i++)
+            {
+                for (int j = 0; j < mapWidth; j++)
+                {
+                    var match = cells.Find(cell => cell.Y == j && cell.X == i);
+                    Items[i,j] = new GameObjectCell(match, TileTemplate, this.transform);
+                }
+            }
+
+            return Items;
+        }
+
+        private List<GameObjectCell> GetListItems(List<Cell> cells)
+        {
+            var Items = new List<GameObjectCell>();
+
+            cells.ForEach(cell => Items.Add(
+                new GameObjectCell(cell, TileTemplate, this.transform)));
+            return Items;
         }
     }
 }
